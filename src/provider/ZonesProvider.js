@@ -1,13 +1,16 @@
-import React, {createContext, useReducer} from "react";
+import React, {createContext, useReducer } from "react";
 import { database } from "../data/baseDeDatos";
 
+let Zones = []
+
+
+//Funcion para obtener las zonas de la base de datos
 const getZones = async () => {
     const zones = await database.getZones()
     return zones
 }
 
-let Zones = []
-
+//Obtener todas las zonas y agregarlas a una lista
 getZones().then((zones) => {
     zones.map((zone) => {
         Zones.push({
@@ -21,19 +24,16 @@ getZones().then((zones) => {
     })
 })
 
+//Crear un estado con la lista de zonas
 const initialState = { Zones }
 const ZoneContext = createContext();
-
-const generateID = () => {
-    const randomNumber = Math.floor(Math.random() * 10000)
-    return randomNumber
-}
 
 const actions = {
     createZone(state, action) {
         const zone = action.payload
-        zone.id = generateID
-        // guardar el usuario en la db
+        const randomNumber = Math.floor(Math.random() * 10000)
+        zone.id = randomNumber
+        // guardar la zona en la base de datos
         database.insertZone(zone)
         return {
             ...state,
@@ -42,9 +42,7 @@ const actions = {
     },
     updateZone(state, action) {
         const zoneUpdated = action.payload
-        // update del usuario en la db
-        const id = zoneUpdated.id
-        console.log('### id ###', id)
+        // actualizar la zona en la base de datos
         database.editZone(zoneUpdated)
         return {
             ...state,
@@ -53,7 +51,7 @@ const actions = {
     },
     deleteZone(state, action) {
         const zoneDelete = action.payload
-        // Borrar el usuario de la db
+        // eliminar la zona de la base de datos
         database.deleteZone(zoneDelete.id)
         return {
             ...state,
@@ -68,10 +66,10 @@ export const ZoneProvider = props => {
         return fn ? fn(state, action) : state
     }
 
-    const [state, dispatch] = useReducer(reducer, initialState)
+    const [stateZ, dispatch] = useReducer(reducer, initialState)
 
     return (
-        <ZoneContext.Provider value={{state, dispatch}}>
+        <ZoneContext.Provider value={{stateZ, dispatch}}>
             {props.children}
         </ZoneContext.Provider>
     )

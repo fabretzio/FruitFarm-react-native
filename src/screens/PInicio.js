@@ -7,6 +7,7 @@ const PInicio = ({ navigation }) => {
 
   const [indicador, setIndicador] = useState(false);
 
+  //Funcion para que luego de cierto tiempo redireccione a un componente//
   const redirect = () => {
     setTimeout(() =>{
       navigation.navigate("Home")
@@ -14,16 +15,19 @@ const PInicio = ({ navigation }) => {
     },2000);
   }
 
+  //UseEffect para redireccionar
   useEffect(() => {
     redirect();
   }, []);
 
   if (!indicador){
+    //Si el indicador es falso, muestra esto
     return (
       <ImageBackground source={require('../../assets/bienvenidos.png')} resizeMode="cover" style={styles.imgBackground}>
       </ImageBackground>
     )
   }else{
+    //Sino muestra esto
     return(
       <ImageBackground source={require('../../assets/bienvenidos.png')} resizeMode="cover" style={styles.imgBackground}>
         <TouchableOpacity

@@ -24,15 +24,12 @@ getSupplies().then((supplies) => {
 const initialState = { Supplies }
 const SupplyContext = createContext();
 
-const generateID = () => {
-    const randomNumber = Math.floor(Math.random() * 10000)
-    return randomNumber
-}
 
 const actions = {
     createSupply(state, action) {
         const supply = action.payload
-        supply.id = generateID
+        const randomNumber = Math.floor(Math.random() * 10000)
+        supply.id = randomNumber
         // agregar insumo a la base de datos
         database.insertSupply(supply)
         return {
@@ -43,8 +40,6 @@ const actions = {
     updateSupply(state, action) {
         const supplyUpdated = action.payload
         // actualizar el insumo en la base de datos
-        const id = supplyUpdated.id
-        console.log('Insumo actualizado', id)
         database.editSupply(supplyUpdated)
         return {
             ...state,
@@ -67,10 +62,10 @@ export const SupplyProvider = props => {
         return fn ? fn(state, action) : state
     }
 
-    const [state, dispatch] = useReducer(reducer, initialState)
+    const [stateS, dispatch] = useReducer(reducer, initialState)
 
     return (
-        <SupplyContext.Provider value={{state, dispatch}}>
+        <SupplyContext.Provider value={{stateS, dispatch}}>
             {props.children}
         </SupplyContext.Provider>
     )

@@ -5,10 +5,14 @@ import UserContext from '../provider/UsersProvider';
 import * as ImagePicker from 'expo-image-picker';
 
 const RegistrarUsuario = ({ route, navigation }) => {
+
+  //Si recive parametros del route, toma los valores de esos parametros, sino crea un objeto nuevo
   const [user, setUser] = useState(route.params ? route.params : {})
-  const { dispatch } = useContext(UserContext)
+  const { dispatch, stateU } = useContext(UserContext)
+  const [usuarios, setUsuarios] = useState(stateU.Users)
 
 
+  //Selector de imagen//
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -26,7 +30,26 @@ const RegistrarUsuario = ({ route, navigation }) => {
     setUser({ ...user, avatar: result.assets[0].uri })
   };
 
+
+  //Validacion de datos//
   const handleValidate = () => {
+
+    let flag = true;
+
+    if (!user.id) {
+      if (user.cedula) {
+        usuarios.map((us) => {
+          if (us.cedula == user.cedula) {
+            Alert.alert('Cedula invalida', 'El usuario ya está registrado')
+            console.log("puto");
+            flag = false
+          }
+        })
+        if (!flag) {
+          return false
+        }
+      }
+    }
 
     if (!user.name) {
       Alert.alert('Nombre invalido', 'Debe ingresar un nombre valido')
@@ -37,10 +60,12 @@ const RegistrarUsuario = ({ route, navigation }) => {
       Alert.alert('Apellido invalido', 'Debe ingresar un apellido valido')
       return false
     }
+
     if (!user.cedula) {
       Alert.alert('Cedula invalida', 'Debe ingresar una cedula valida')
       return false
     }
+
     // controlar si selecciono un avatar
     if (!user.avatar) {
       Alert.alert('Avatar invalido', 'Debe seleccionar un avatar')
@@ -50,6 +75,7 @@ const RegistrarUsuario = ({ route, navigation }) => {
     return true
   }
 
+  //Guardado del objeto nuevo o modificado//
   const handleSave = () => {
     if (handleValidate()) {
       dispatch({
@@ -61,20 +87,28 @@ const RegistrarUsuario = ({ route, navigation }) => {
     }
   }
 
+  //Rellenar campo de cedula si es que se va a modificar un usuario//
+  const getCed = () => {
+    if (user.cedula) {
+      return user.cedula.toString();
+    } else {
+      return ""
+    }
+  }
   return (
+    //Imagen de fondo//
     <ImageBackground source={require('../../assets/backgroundRegisterUser.jpg')} resizeMode="cover" style={{
       flex: 1
     }}>
-
       <View style={styles.form}>
-        <Text style={{fontWeight:"bold"}}>Nombre</Text>
+        <Text style={{ fontWeight: "bold" }}>Nombre</Text>
         <TextInput
           placeholder="Nombre"
           value={user?.name}
           onChangeText={(name) => setUser({ ...user, name })}
           style={styles.input}
         />
-        <Text style={{fontWeight:"bold"}}>Apellido</Text>
+        <Text style={{ fontWeight: "bold" }}>Apellido</Text>
         <TextInput
           placeholder="Apellido"
           value={user?.apellido}
@@ -82,15 +116,15 @@ const RegistrarUsuario = ({ route, navigation }) => {
           style={styles.input}
         />
 
-        <Text style={{fontWeight:"bold"}}>Cedula</Text>
+        <Text style={{ fontWeight: "bold" }}>Cedula</Text>
         <TextInput
           placeholder="C.I"
-          value={user?.cedula}
+          value={getCed()}
           onChangeText={(cedula) => setUser({ ...user, cedula })}
           style={styles.input}
         />
 
-        <Text style={{fontWeight:"bold"}}>Avatar</Text>
+        <Text style={{ fontWeight: "bold" }}>Avatar</Text>
         <View style={styles.buttonContainer}>
           <Button title="Imagen" onPress={pickImage} />
         </View>

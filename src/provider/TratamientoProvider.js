@@ -31,27 +31,21 @@ getTratamientos().then((tratamientos) => {
 const initialState = { Tratamientos }
 const TratamientosContext = createContext();
 
-const generateID = () => {
-    const randomNumber = Math.floor(Math.random() * 10000)
-    return randomNumber
-}
-
 const actions = {
     createTratamiento(state, action) {
         const tratamiento = action.payload
-        tratamiento.id = generateID
+        const randomNumber = Math.floor(Math.random() * 10000)
+        tratamiento.id = randomNumber
         // agregar tratamiento a la base de datos
         database.insertTratamiento(tratamiento)
         return {
             ...state,
-            Tratamientos: [...state.Tratamientos, supply] 
+            Tratamientos: [...state.Tratamientos, tratamiento] 
         }
     },
     updateTratamiento(state, action) {
         const tratamientoUpdated = action.payload
         // actualizar el tratamiento en la base de datos
-        const id = tratamientoUpdated.id
-        console.log('Tratamiento actualizado', id)
         database.editTratamiento(tratamientoUpdated)
         return {
             ...state,
@@ -74,10 +68,10 @@ export const TratamientosProvider = props => {
         return fn ? fn(state, action) : state
     }
 
-    const [state, dispatch] = useReducer(reducer, initialState)
+    const [stateT, dispatch] = useReducer(reducer, initialState)
 
     return (
-        <TratamientosContext.Provider value={{state, dispatch}}>
+        <TratamientosContext.Provider value={{stateT, dispatch}}>
             {props.children}
         </TratamientosContext.Provider>
     )

@@ -5,12 +5,13 @@ import PButton from '../components/PButton';
 export const Home = ({ navigation }) => {
     return (
         <ImageBackground source={require('../../assets/campo.jpg')} resizeMode="cover" style={styles.image}>
-            <SafeAreaView style={styles.container}>
-                <View style={styles.viewContainer}>
+            <SafeAreaView style={{ flex: 1}}>
                     <View style={styles.generalContainer}>
                         <ScrollView>
                             <View style={styles.viewContainer2}>
                                 <View style={styles.viewContainerFirstColumn}>
+
+                                     {/*Pantalla home con la lista de botones, que redireccionan a distintos componentes*/}
                                     <PButton
                                         title="Usuarios"
                                         btnColor="#303134"
@@ -59,25 +60,16 @@ export const Home = ({ navigation }) => {
                             </View>
                         </ScrollView>
                     </View>
-                </View>
             </SafeAreaView>
         </ImageBackground>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    viewContainer: {
-        flex: 1,
-    },
     generalContainer: {
         flex: 1,
         justifyContent: "center",
     },
-
-    // lista en 2 columnas
     viewContainer2: {
         flexDirection: "column",
     },

@@ -1,6 +1,7 @@
 import React, {createContext, useReducer} from "react";
 import { database } from "../data/baseDeDatos";
 
+//Funcion para obtener los usuarios de la base de datos
 const getUsers = async () => {
     const users = await database.getUsers()
     return users
@@ -8,6 +9,7 @@ const getUsers = async () => {
 
 let Users = []
 
+//Obtener todos los usuarios y agregarlos a una lista
 getUsers().then((users) => {
     users.map((user) => {
         Users.push({
@@ -20,20 +22,17 @@ getUsers().then((users) => {
     })
 })
 
-
+//Crear un estado con la lista de usuarios
 const initialState = { Users }
 const UserContext = createContext();
 
-const generateID = () => {
-    const randomNumber = Math.floor(Math.random() * 10000)
-    return randomNumber
-}
 
 const actions = {
     createUser(state, action) {
         const user = action.payload
-        user.id = generateID
-        // guardar el usuario en la db
+        const randomNumber = Math.floor(Math.random() * 10000)
+        user.id = randomNumber
+        // agregar el usuario en la base de datos
         database.insertUser(user)
         return {
             ...state,
@@ -42,9 +41,7 @@ const actions = {
     },
     updateUser(state, action) {
         const userUpdated = action.payload
-        // update del usuario en la db
-        const id = userUpdated.id
-        console.log('### id ###', id)
+        // actualizar el usuario en la base de datos
         database.editUser(userUpdated)
         return {
             ...state,
@@ -53,7 +50,7 @@ const actions = {
     },
     deleteUser(state, action) {
         const userDelete = action.payload
-        // Borrar el usuario de la db
+        // Borrar el usuario en la base de datos
         database.deleteUser(userDelete.id)
         return {
             ...state,
@@ -68,10 +65,10 @@ export const UserProvider = props => {
         return fn ? fn(state, action) : state
     }
 
-    const [state, dispatch] = useReducer(reducer, initialState)
+    const [stateU, dispatch] = useReducer(reducer, initialState)
 
     return (
-        <UserContext.Provider value={{state, dispatch}}>
+        <UserContext.Provider value={{stateU, dispatch}}>
             {props.children}
         </UserContext.Provider>
     )

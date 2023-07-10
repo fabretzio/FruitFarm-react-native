@@ -7,16 +7,43 @@ import MapView from 'react-native-maps';
 
 const RegistrarZona = ({ route, navigation }) => {
 
+    //Si recive parametros del route, toma los valores de esos parametros, sino crea un objeto nuevo
   const [zone, setZone] = useState(route.params ? route.params : {})
   const { dispatch } = useContext(ZoneContext)
+
+  //Seteo de estados para latitud y longitud//
   const [latitud, setLatitud] = useState();
   const [longitud, setLongitud] = useState();
+
+  //Datos para el selectList de departamentos//
+  const deps = [{ key: '1', value: 'Colonia' }, 
+                { key: '2', value: 'San José' }, 
+                { key: '3', value: 'Montevideo' }, 
+                { key: '4', value: 'Canelones' }, 
+                { key: '5', value: 'Maldonado' }, 
+                { key: '6', value: 'Rocha' }, 
+                { key: '7', value: 'Lavalleja' }, 
+                { key: '8', value: 'Flores' }, 
+                { key: '9', value: 'Florida' }, 
+                { key: '10', value: 'Treinta y tres' }, 
+                { key: '11', value: 'Salto' }, 
+                { key: '12', value: 'Rivera' }, 
+                { key: '13', value: 'Tacuarembó' }, 
+                { key: '14', value: 'Soriano' }, 
+                { key: '15', value: 'Durazno' }, 
+                { key: '16', value: 'Artigas' }, 
+                { key: '17', value: 'Cerro Largo' }, 
+                { key: '18', value: 'Río Negro' }, 
+                { key: '19', value: 'Paysandú' }]
+
+  //Datos para el selectList de nombre//
   const data = [
-    { key: '1', value: 'Estancia' },
-    { key: '2', value: 'Quinta' },
-    { key: '3', value: 'Estacion' }
+    { key: 'Estancia', value: 'Estancia' },
+    { key: 'Quinta', value: 'Quinta' },
+    { key: 'Estacion', value: 'Estacion' }
   ];
 
+  //Validacion de datos//
   const handleValidate = () => {
 
     if (!zone.lugar) {
@@ -46,9 +73,10 @@ const RegistrarZona = ({ route, navigation }) => {
     return true
   }
 
+  //Creacion o modificacion de un objeto para guardarlo//
   const handleSave = () => {
-    setZone( ...zone.longitud = longitud);
-    setZone( ...zone.latitud = latitud);
+    setZone(...zone.longitud = longitud);
+    setZone(...zone.latitud = latitud);
 
     if (handleValidate()) {
       dispatch({
@@ -60,21 +88,28 @@ const RegistrarZona = ({ route, navigation }) => {
     }
   }
 
+  //Guardar el lugar seleccionado//
   const saveLugar = (lugar) => {
     setZone({ ...zone, lugar })
   }
 
+  //Guardar el departamento seleccionado//
+  const saveDep = (departamento) => {
+    setZone({ ...zone, departamento })
+  }
+
+  //Guardar los datos de latitud y longitud cuanso se navega por el mapa//
   const regionChange = (region) => {
     let latitude = parseFloat(region.latitude);
     let longitude = parseFloat(region.longitude);
-
     setLatitud(latitude.toString());
     setLongitud(longitude.toString());
   }
 
   return (
     <View style={styles.form}>
-      
+
+      <Text style={{ fontWeight: "bold" }}>Lugar</Text>
       <SelectList
         placeholder='Seleccione un lugar'
         setSelected={(val) => saveLugar(val)}
@@ -82,15 +117,16 @@ const RegistrarZona = ({ route, navigation }) => {
         save="value"
       />
 
-      <Text style={{fontWeight:"bold"}}>Departamento</Text>
-      <TextInput
-        placeholder="Departamento"
+      <Text style={{ fontWeight: "bold" }}>Departamento</Text>
+      <SelectList
+        placeholder='Departamento'
         value={zone?.departamento}
-        onChangeText={(departamento) => setZone({ ...zone, departamento })}
-        style={styles.input}
+        setSelected={(departamento) => saveDep(departamento)}
+        data={deps}
+        save="value"
       />
 
-      <Text style={{fontWeight:"bold"}}>Trabajadores</Text>
+      <Text style={{ fontWeight: "bold" }}>Trabajadores</Text>
       <TextInput
         placeholder="Ingrese la cantidad"
         value={zone?.trabajadores}
@@ -98,7 +134,7 @@ const RegistrarZona = ({ route, navigation }) => {
         style={styles.input}
       />
 
-      <Text style={{fontWeight:"bold"}}>Latitud</Text>
+      <Text style={{ fontWeight: "bold" }}>Latitud</Text>
       <TextInput
         placeholder="Ingrese latitud"
         value={latitud}
@@ -106,7 +142,7 @@ const RegistrarZona = ({ route, navigation }) => {
         style={styles.input}
       />
 
-      <Text style={{fontWeight:"bold"}}>Longitud</Text>
+      <Text style={{ fontWeight: "bold" }}>Longitud</Text>
       <TextInput
         placeholder="Ingrese longitud"
         value={longitud}
@@ -124,7 +160,7 @@ const RegistrarZona = ({ route, navigation }) => {
           longitudeDelta: 1.4355648175064175,
         }}
       >
-      
+
       </MapView>
       <Button
         title='Guardar'

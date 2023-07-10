@@ -30,12 +30,14 @@ const useDatabase = () => {
     const loadData2 = async () => {
       try {
 
+          //Crear las trablas en la base de datos
           await database.setupTableUser(db);
           await database.setupTableZone(db);     
           await database.setupTableSupply(db); 
           await database.setupTableObsevacion(db);
           await database.setupTableTratamientos(db);
 
+          //Obtener datos de la base de datos, si es que los hay
           const usuarios = await database.getUsers();
           const zonas = await database.getZones();
           const insumos = await database.getSupply();
@@ -48,9 +50,11 @@ const useDatabase = () => {
           setObservation(observaciones);
           setTrat(tratamientos);
 
+          //Si no hay datos se borran las tablas, se crean de nuevo y se agrega un dato automatico//
         if (users.length == 0) {
           await database.dropTableUsers(db);
-          await database.setupTableUser(db);        
+          await database.setupTableUser(db);       
+          await database.setupUser(db); 
         }
 
         if (zones.length == 0) {
@@ -68,6 +72,7 @@ const useDatabase = () => {
         if(observation.length == 0){
           await database.dropTableObservacion(db);
           await database.setupTableObsevacion(db);
+          await database.setupObservation(db);
         }
 
         if(trat.length == 0){

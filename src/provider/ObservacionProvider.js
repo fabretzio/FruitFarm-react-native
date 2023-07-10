@@ -14,7 +14,7 @@ getOb().then((observations) => {
     observations.map((observation) => {
         Observations.push({
             id: observation.id,
-            title: observation.title,
+            titulo: observation.titulo,
             foto: observation.foto,
             latitud: observation.latitud,
             longitud: observation.longitud
@@ -26,15 +26,11 @@ getOb().then((observations) => {
 const initialState = { Observations }
 const ObservationContext = createContext();
 
-const generateID = () => {
-    const randomNumber = Math.floor(Math.random() * 10000)
-    return randomNumber
-}
-
 const actions = {
     createObservation(state, action) {
         const observation = action.payload
-        observation.id = generateID
+        const randomNumber = Math.floor(Math.random() * 10000)
+        observation.id = randomNumber
         // agregar observacion a la base de datos
         database.insertObservacion(observation)
         return {
@@ -45,8 +41,6 @@ const actions = {
     updateObservation(state, action) {
         const observationUpdated = action.payload
         // actualizar observacion en la base de datos
-        const id = observationUpdated.id
-        console.log('Observacion actualizada', id)
         database.editObservacion(observationUpdated)
         return {
             ...state,
@@ -69,10 +63,10 @@ export const ObservationProvider = props => {
         return fn ? fn(state, action) : state
     }
 
-    const [state, dispatch] = useReducer(reducer, initialState)
+    const [stateO, dispatch] = useReducer(reducer, initialState)
 
     return (
-        <ObservationContext.Provider value={{state, dispatch}}>
+        <ObservationContext.Provider value={{stateO, dispatch}}>
             {props.children}
         </ObservationContext.Provider>
     )

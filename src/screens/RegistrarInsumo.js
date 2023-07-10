@@ -5,9 +5,11 @@ import SupplyContext from '../provider/SupplyProvider';
 
 const RegistrarInsumo = ({ route, navigation }) => {
 
+  //Si recive parametros del route, toma los valores de esos parametros, sino crea un objeto nuevo
   const [supply, setSupply] = useState(route.params ? route.params : {})
   const { dispatch } = useContext(SupplyContext)
 
+  //Validacion de datos//
   const handleValidate = () => {
 
     if (!supply.name) {
@@ -23,6 +25,7 @@ const RegistrarInsumo = ({ route, navigation }) => {
     return true
   }
 
+  //Funcion para crear o modificar un objeto//
   const handleSave = () => {
     if (handleValidate()) {
       dispatch({
@@ -34,6 +37,13 @@ const RegistrarInsumo = ({ route, navigation }) => {
     }
   }
 
+  const getCantidad = () => {
+    if(supply.cantidad){
+      return supply.cantidad.toString();
+    }else{
+      return ""
+    }
+  }
   return (
     <ImageBackground source={require('../../assets/backgroundSuplies.jpg')} resizeMode="cover" style={{
       flex: 1
@@ -50,7 +60,7 @@ const RegistrarInsumo = ({ route, navigation }) => {
       <Text style={{fontWeight:"bold"}}>Cantidad del insumo</Text>
       <TextInput
         placeholder="Ingrese la cantidad"
-        value={supply?.cantidad}
+        value={getCantidad()}
         onChangeText={(cantidad) => setSupply({ ...supply, cantidad })}
         style={styles.input}
       />

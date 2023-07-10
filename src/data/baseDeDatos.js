@@ -6,6 +6,7 @@ import { Platform } from "react-native";
 
 let db = SQlite.openDatabase("database.db");
 
+//creacion de scripts SQL para Usuarios//
 const createTableUsersSQL =
   "CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(50), apellido VARCHAR(50), cedula NUMERIC(8), avatarUrl VARCHAR(400))";
 const insertUserSQL =
@@ -14,14 +15,16 @@ const updateUserSQL =
   "UPDATE users SET name = (?), apellido = (?), cedula = (?), avatarUrl = (?) WHERE id = (?)";
 const deletetUserSQL = "DELETE FROM users WHERE id = (?)";
 
+//creacion de scripts SQL para Zonas//
 const createTableZonesSQL =
-  "CREATE TABLE zones(id INTEGER PRIMARY KEY AUTOINCREMENT, lugar VARCHAR(15), departamento VARCHAR(50), trabajadores NUMERIC(3), latitud NUMERIC(26,23), longitud NUMERIC(26,23))";
+  "CREATE TABLE zones(id INTEGER PRIMARY KEY AUTOINCREMENT, lugar VARCHAR(15), departamento VARCHAR(50), trabajadores VARCHAR(3), latitud NUMERIC(26,23), longitud NUMERIC(26,23))";
 const insertZoneSQL =
   "INSERT INTO zones (lugar, departamento, trabajadores, latitud, longitud) VALUES (?,?,?,?,?)";
 const updateZoneSQL =
   "UPDATE zones SET lugar = (?), departamento = (?), trabajadores = (?), latitud = (?), longitud = (?) WHERE id = (?)";
 const deletetZoneSQL = "DELETE FROM zones WHERE id = (?)";
 
+//creacion de scripts SQL para Insumos//
 const createTableSupplySQL =
   "CREATE TABLE supply (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR (50), cantidad NUMERIC(4))";
 const insertSupplySQL =
@@ -30,6 +33,7 @@ const updateSupplySQL =
   "UPDATE supply SET name = (?), cantidad (?) WHERE id = (?)";
 const deleteSupplySQL = "DELETE FROM supply WHERE id = (?)";
 
+//creacion de scripts SQL para Observaciones//
 const createTableObSQL =
   "CREATE TABLE observacion (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo VARCHAR (50), foto VARCHAR(400), latitud NUMERIC(26,23), longitud NUMERIC(26,23))";
 const insertObSQL =
@@ -39,14 +43,15 @@ const updateObSQL =
 const deleteObSQL =
   "DELETE FROM observacion WHERE id = (?)";
 
+//creacion de scripts SQL para Tratamientos//
 const createTableTratamientoSQL =
-  "CREATE TABLE tratamientos (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR (50), zone INTEGER REFERENCES zones(id), user INTEGER references users (id), fechaIni VARCHAR(100), fechaFin VARCHAR (100), tiempo INT, orden VARCHAR (500), insumos VARCHAR (50), observaciones INTEGER REFERENCES observacion (id))";
+  "CREATE TABLE tratamientos (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR (50), zone INTEGER REFERENCES zones(id), user INTEGER references users (id), fechaIni VARCHAR(100), fechaFin VARCHAR (100), tiempo VARCHAR(3), orden VARCHAR (500), insumos VARCHAR (50), observaciones VARCHAR (50) )";
 const insertTratamientoSQL =
   "INSERT INTO tratamientos (name, zone, user, fechaIni, fechaFin, tiempo, orden, insumos, observaciones) VALUES (?,?,?,?,?,?,?,?,?)";
 const updateTratamientoSQL =
   "UPDATE tratamientos SET name = (?), zone = (?), user = (?), fechaIni = (?), fechaFin = (?), tiempo = (?), orden = (?), insumos = (?), observaciones = (?)";
 const deleteTratamientoSQL =
-  "DELTE FROM tratamientos WHERE id = (?)";
+  "DELETE FROM tratamientos WHERE id = (?)";
 
 //Coneccion con la base de datos//
 const openDatabase = async (dbName) => {
@@ -54,6 +59,7 @@ const openDatabase = async (dbName) => {
   return db;
 }
 
+//Cerrar coneccion con la base de datos//
 const closeConnection = () => {
   db.close();
 }
@@ -150,13 +156,12 @@ const setupTableTratamientos = async (db) => {
 };
 
 //Datos de base//
-
-const setupZones = async () => {
+const setupUser = async (db) => {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        "INSERT INTO zones (lugar, departamento, trabajadores, latitud, longitud) VALUES (?, ?, ?, ?, ?)",
-        ["Estancia", "Colonia", 5, 45.8, 230.50],
+        "INSERT INTO users (name, apellido, cedula, avatarUrl) VALUES (?, ?, ?, ?)",
+        ["Perito", "Lopez", 51370967, "https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_960_720.png" ],
         (tx, succes) => {
           resolve(succes);
         },
@@ -168,7 +173,24 @@ const setupZones = async () => {
   });
 };
 
-const setupSupply = async () => {
+const setupZones = async (db) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "INSERT INTO zones (lugar, departamento, trabajadores, latitud, longitud) VALUES (?, ?, ?, ?, ?)",
+        ["Estancia", "Colonia", "5",-34.457813, -57.825724],
+        (tx, succes) => {
+          resolve(succes);
+        },
+        (tx, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+const setupSupply = async (db) => {
   return new Promise((resolve, reject) => {
 
     db.transaction((tx) => {
@@ -176,6 +198,25 @@ const setupSupply = async () => {
       tx.executeSql(
         "INSERT INTO supply (name, cantidad) VALUES (?, ?)",
         ["Trigo", 400],
+        (tx, succes) => {
+          resolve(succes);
+        },
+        (tx, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+const setupObservation = async (db) => {
+  return new Promise((resolve, reject) => {
+
+    db.transaction((tx) => {
+
+      tx.executeSql(
+        "INSERT INTO observacion (titulo, foto, latitud, longitud) VALUES (?, ?, ?, ?)",
+        ["Plaga detectada", "https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_960_720.png", 56.11112222 , 35.111225445],
         (tx, succes) => {
           resolve(succes);
         },
@@ -226,7 +267,7 @@ const dropTableZones = async (db) => {
           if (res.rows.length) {
             txn.executeSql("DROP TABLE IF EXISTS zones", []);
             txn.executeSql(
-              "CREATE TABLE IF NOT EXISTS zones(id INTEGER PRIMARY KEY AUTOINCREMENT, lugar VARCHAR(15), departamento VARCHAR(50), trabajadores NUMERIC(3), latitud NUMERIC(26,23), longitud NUMERIC(26,23))",
+              "CREATE TABLE IF NOT EXISTS zones(id INTEGER PRIMARY KEY AUTOINCREMENT, lugar VARCHAR(15), departamento VARCHAR(50), trabajadores VARCHAR(3), latitud NUMERIC(26,23), longitud NUMERIC(26,23))",
               [],
               (_, succes) => {
                 resolve(succes);
@@ -307,7 +348,7 @@ const dropTableTratamientos = async (db) => {
           if (res.rows.length) {
             txn.executeSql("DROP TABLE IF EXISTS tratamientos", []);
             txn.executeSql(
-              "CREATE TABLE tratamientos (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR (50), zone INTEGER REFERENCES zones(id), user INTEGER references users (id), fechaIni VARCHAR(100), fechaFin VARCHAR (100), tiempo INT, orden VARCHAR (500), insumos VARCHAR (50), observaciones INTEGER REFERENCES observacion (id))",
+              "CREATE TABLE tratamientos (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR (50), zone INTEGER REFERENCES zones(id), user INTEGER references users (id), fechaIni VARCHAR(100), fechaFin VARCHAR (100), tiempo INT, orden VARCHAR (500), insumos VARCHAR (50), observaciones VARCHAR (50))",
               [],
               (_, succes) => {
                 resolve(succes);
@@ -368,13 +409,12 @@ const insertUser = async (user) => {
 };
 
 const editUser = (user) => {
-  const { name, apellido, cedula, avatar } = user;
-  console.log("### id ###", id);
+  const { id, name, apellido, cedula, avatar } = user;
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
         updateUserSQL,
-        [name, apellido, cedula, avatar],
+        [ id, name, apellido, cedula, avatar],
         (_, succes) => {
           console.log("succes update user", succes);
           resolve(succes);
@@ -451,13 +491,12 @@ const insertZone = async (zone) => {
 };
 
 const editZone = (zone) => {
-  const { lugar, departamento, trabajadores, latitud, longitud } = zone;
-  console.log("### id ###", id);
+  const { id, lugar, departamento, trabajadores, latitud, longitud } = zone;
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
         updateZoneSQL,
-        [lugar, departamento, trabajadores, latitud, longitud],
+        [id, lugar, departamento, trabajadores, latitud, longitud],
         (_, succes) => {
           console.log("succes update user", succes);
           resolve(succes);
@@ -535,13 +574,13 @@ const insertSupply = async (supply) => {
 };
 
 const editSupply = (supply) => {
-  const { name, cantidad } = supply;
-  console.log("### id ###", id);
+  const { id, name, cantidad } = supply;
+
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
         updateSupplySQL,
-        [name, cantidad],
+        [id, name, cantidad],
         (_, succes) => {
           console.log("succes update supply", succes);
           resolve(succes);
@@ -618,12 +657,12 @@ const insertObservacion = async (observacion) => {
 };
 
 const editObservacion = (observacion) => {
-  const { titulo, foto, latitud, longitud } = observacion;
+  const { id, titulo, foto, latitud, longitud } = observacion;
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
         updateObSQL,
-        [titulo, foto, latitud, longitud],
+        [id, titulo, foto, latitud, longitud],
         (_, succes) => {
           console.log("succes update observacion", succes);
           resolve(succes);
@@ -700,12 +739,12 @@ const insertTratamiento = async (tratamiento) => {
 };
 
 const editTratamiento = (tratamiento) => {
-  const { name, zone, user, fechaIni, fechaFin, tiempo, orden, insumos, observaciones } = tratamiento;
+  const { id, name, zone, user, fechaIni, fechaFin, tiempo, orden, insumos, observaciones } = tratamiento;
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
-        updateObSQL,
-        [name, zone, user, fechaIni, fechaFin, tiempo, orden, insumos, observaciones],
+        updateTratamientoSQL,
+        [ id, name, zone, user, fechaIni, fechaFin, tiempo, orden, insumos, observaciones],
         (_, succes) => {
           console.log("succes update tratamiento", succes);
           resolve(succes);
@@ -807,8 +846,10 @@ export const database = {
   dropTableSupply,
   dropTableObservacion,
   dropTableTratamientos,
+  setupUser,
   setupZones,
   setupSupply,
+  setupObservation,
   // crud usuarios
   getUsers,
   insertUser,

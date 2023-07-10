@@ -12,17 +12,17 @@ export default function App() {
 
   if (isDBLoadingComplete) {
     return (
-      <TratamientosProvider>
-        <ObservationProvider>
-          <SupplyProvider>
-            <ZoneProvider>
-              <UserProvider>
+      <ObservationProvider>
+        <SupplyProvider>
+          <ZoneProvider>
+            <UserProvider>
+              <TratamientosProvider>
                 <Navigation />
-              </UserProvider>
-            </ZoneProvider>
-          </SupplyProvider>
-        </ObservationProvider>
-      </TratamientosProvider>
+              </TratamientosProvider>
+            </UserProvider>
+          </ZoneProvider>
+        </SupplyProvider>
+      </ObservationProvider>
 
 
     );

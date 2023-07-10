@@ -19,12 +19,15 @@ import RegistrarObservacion from "../screens/RegistrarObservacion";
 import PInicio from "../screens/PInicio";
 import RegistrarTratamiento from "../screens/RegistrarTratamiento";
 
+
 const Navigation = () => {
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
         {/* Pantallas */}
 
+        {/*Pantalla de bienvenida*/}
         <Stack.Screen
           name=" "
           component={PInicio}
@@ -33,6 +36,7 @@ const Navigation = () => {
           }}
         />
 
+        {/*Pantalla de inicio*/}   
         <Stack.Screen
           name="Home"
           component={Home}
@@ -48,6 +52,7 @@ const Navigation = () => {
           }}
         />
 
+        {/*Pantalla con lista de usuarios*/}
         <Stack.Screen
           name="MainUsers"
           component={MainUsers}
@@ -74,6 +79,7 @@ const Navigation = () => {
           }}
         />
 
+        {/*Pantalla con lista de zonas*/}
         <Stack.Screen
           name="MainZone"
           component={MainZone}
@@ -100,6 +106,7 @@ const Navigation = () => {
           }}
         />
 
+        {/*Pantalla con lista de insumos*/}
         <Stack.Screen
           name="MainSupplies"
           component={MainSupplies}
@@ -126,6 +133,7 @@ const Navigation = () => {
           }}
         />
 
+        {/*Pantalla con lista de observaciones*/}
         <Stack.Screen
           name="MainOb"
           component={MainOb}
@@ -152,21 +160,34 @@ const Navigation = () => {
           }}
         />
 
+        {/*Pantalla con lista de tratamientos*/}
         <Stack.Screen
           name="MainTrat"
           component={MainTrat}
-          options={{
-            title: "Tratamientos",
-            headerStyle: {
-              backgroundColor: "#303134",
-            },
-            headerTintColor: "#fff",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
+          options={({ navigation }) => {
+            return {
+              title: "Tratamientos",
+              headerStyle: {
+                backgroundColor: "#303134",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerRight: () => (
+                <Button
+                  onPress={() => navigation.navigate("RegistrarTratamiento")}
+                  type="clear"
+                  icon={
+                    <Icon name="add" size={25} color="white" />
+                  }
+                />
+              )
+            }
           }}
         />
 
+        {/*Pantalla del mapa con tratamientos*/}
         <Stack.Screen
           name="Mapa"
           component={Mapa}
@@ -181,7 +202,8 @@ const Navigation = () => {
             },
           }}
         />
-
+        
+        {/*Pantalla para el registro de usuarios*/}
         <Stack.Screen
           name="RegistrarUsuario"
           component={RegistrarUsuario}
@@ -197,6 +219,7 @@ const Navigation = () => {
           }}
         />
 
+        {/*Pantalla para el registro de zonas*/}
         <Stack.Screen
           name="RegistrarZona"
           component={RegistrarZona}
@@ -212,6 +235,7 @@ const Navigation = () => {
           }}
         />
 
+        {/*Pantalla para el registro de insumos*/}
         <Stack.Screen
           name="RegistrarInsumo"
           component={RegistrarInsumo}
@@ -227,6 +251,7 @@ const Navigation = () => {
           }}
         />
 
+        {/*Pantalla para el registro de observaciones*/}
         <Stack.Screen
           name="RegistrarObservacion"
           component={RegistrarObservacion}
@@ -242,6 +267,7 @@ const Navigation = () => {
           }}
         />
 
+        {/*Pantalla para el registro de tratamientos*/}
         <Stack.Screen
           name="RegistrarTratamiento"
           component={RegistrarTratamiento}
